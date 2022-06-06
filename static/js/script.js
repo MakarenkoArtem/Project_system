@@ -1,4 +1,60 @@
-let drag_elements = document.getElementsByClassName("moving");
+let drag_cols = document.getElementsByClassName("place_to_drag");
+for (let elem of drag_cols) {
+    elem.addEventListener('dragover', function() {drag_move(event)})//для всех мест куда перемещается элемент делаем обработку перемещающегося элемента
+}
+
+
+let drag_elements = document.getElementsByClassName("drag_element");
+for (let elem of drag_elements) {
+    elem.draggable = true;
+    elem.addEventListener("dragstart", function() {drag_start(event)} );//отслежвание нажатия и начала движения
+    elem.addEventListener('dragend', function() {drag_end(event)});//отслежвание отпускания и окончания движения
+}
+
+function drag_start(event){
+    if (event.target.className.indexOf("drag_element") != -1){event.target.classList.add('selected');}
+};
+
+function drag_move(event) {
+    event.preventDefault();
+    const activeElement = document.querySelector('.selected');
+    let currentElement = event.target;
+	while (currentElement != null && currentElement.className.indexOf("place_to_drag") == -1) {
+	    currentElement = currentElement.parentElement;
+	};
+	currentElement.appendChild(activeElement);
+};
+
+
+function drag_end(event){
+    event.target.classList.remove('selected');
+    change_value(event);
+};
+function change_value(event){
+    const data = JSON.stringify({'action_id':123, 'column_id':1});
+    const request = new XMLHttpRequest();
+
+    console.log(window.location.pathname)
+    request.open("post", "/api/v1/action"+window.location.pathname);
+    request.setRequestHeader("Content-Type", "application/json");
+
+    request.onload = () => {
+        if (request.status == 200) {
+            const user = JSON.parse(request.responseText)
+            console.log(user);
+        } else {
+            console.log("Server response: ", request.statusText);
+        }
+    };
+    request.send(data);
+};
+/*--------------------old version-------------------------------------
+let drag_cols = document.getElementsByClassName("place_to_drag");
+console.log(drag_cols);
+for (let elem of drag_cols) {
+    elem.addEventListener('dragover', function() {drag_move(event)})
+}
+let drag_elements = document.getElementsByClassName("drag_element");
 console.log(drag_elements);
 for (let elem of drag_elements) {
     console.log(elem);
@@ -6,8 +62,9 @@ for (let elem of drag_elements) {
     /*elem.addEventListener("dragstart", (event) => {
       event.target.classList.add('selected');
     });//отслежвание нажатия и начала движения*/
-    elem.addEventListener("dragstart", function() {drag_start(event)} );
-    elem.addEventListener('dragover', function() {drag_move(event)})
+    //elem.addEventListener("dragstart", function() {drag_start(event)} );
+    //elem.addEventListener('dragover', function() {drag_move(event)})
+    //elem.addEventListener('dragleave', function() {drag_move(event)})
     /*elem.addEventListener('dragover', (event) => {
 	  console.log(1);
       event.preventDefault();
@@ -25,35 +82,49 @@ for (let elem of drag_elements) {
 	document.insertBefore(activeElement, nextElement);
 	console.log(123);
     });//отслежвание движения*/
-    elem.addEventListener('dragend', (event) => {
+    /*elem.addEventListener('dragend', (event) => {
       event.target.classList.remove('selected');
     });//отслежвание отпускания и окончания движения
 }
 //const tasksListElement = document.querySelector(`.tasks__list`);
-
-function drag_start(event){
-    event.target.classList.add('selected');
+function drag(event) {
+console.log(event);
 };
-
+function drag_start(event){
+  	/*while (elem != null && elem.className.indexOf("moving") == -1) {
+        elem = elem.parentElement;
+        console.log(elem.className)
+    };
+    if (elem != null) {elem.classList.add('selected');};*/
+    /*if (event.target.className.indexOf("drag_element") != -1){event.target.classList.add('selected');}
+};
 function drag_move(event) {
-    console.log(-22222);
-    event.preventDefault();
+    //event.preventDefault();
     const activeElement = document.querySelector('.selected');
     let currentElement = event.target;
-	console.log(activeElement);
-	while (currentElement != null || currentElement.className.indexOf("moving") == -1) {
-	    currentElement = currentElement.parentElement;
-	    console.log(currentElement != null, currentElement.className.indexOf("moving") == -1, currentElement.className, currentElement);
-	};
-	console.log(2);
 	console.log(currentElement);
-    const isMoveable = activeElement !== currentElement && currentElement.classList.contains('tasks__item');
-    console.error(isMoveable)
-    if (!isMoveable) {return;}
-    const nextElement = (currentElement === activeElement.nextElementSibling) ?
+	while (currentElement != null && currentElement.className.indexOf("place_to_drag") == -1) {
+	    currentElement = currentElement.parentElement;
+	    //console.log(currentElement != null, currentElement.className.indexOf("col") == -1, currentElement.className, currentElement);
+	};
+
+	console.log(1);
+	//console.log(currentElement);
+	let activeColElement = activeElement;
+	while (activeColElement != null && activeColElement.className.indexOf("place_to_drag") == -1) {
+	    activeColElement = activeColElement.parentElement;
+	    //console.log(activeColElement != null, activeColElement.className.indexOf("col") == -1, activeColElement.className, activeColElement);
+	};
+	console.log(4);
+    const isMoveable = activeColElement !== currentElement;
+    //console.info(isMoveable)
+    //if (!isMoveable) {return;}
+    /*const nextElement = (currentElement === activeElement.nextElementSibling) ?
 	urrentElement.nextElementSibling :
 	urrentElement;
-	document.insertBefore(activeElement, nextElement);
+	document.insertBefore(activeElement, nextElement);*/
+	/*console.error(activeElement, currentElement);
+	currentElement.appendChild(activeElement);
 };
 
 
@@ -140,4 +211,5 @@ function getCoords(elem) {
         top: box.top,
         left: box.left
     };
-}*/
+}
+*/

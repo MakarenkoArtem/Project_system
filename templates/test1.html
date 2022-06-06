@@ -35,7 +35,7 @@
       </ul>
     </div>
   </div>
-</nav>
+</--nav>
 <ul class="nav nav-tabs">
   <li class="nav-item">
     <a class="nav-link active" aria-current="page" href="#">Active</a>
@@ -56,11 +56,80 @@
   <li class="nav-item">
     <a class="nav-link disabled">Disabled</a>
   </li>
-</ul-->
+</ul>!-->
 
-<div class="row row-cols-1 row-cols-md-3 g-4" style="height: 100%; position: absolute; width: 100%">
-    <div class="col place_to_drag" style="height: 100%;">
-        <div class="card drag_element">
+        <div class="card moving">
+          <div class="card-body">
+            <h5 class="card-title"></h5>
+            <p class="card-text"></p>
+            <a href="#" class="btn btn-primary">1</a>
+          </div></div>
+<!--div class="row row-cols-1 row-cols-md-3 g-4" style="height: 100%; position: absolute; width: 100%">
+    <div class="col" style="height: 100%;">
+        <div class="card moving">
+          <div class="card-body">
+            <h5 class="card-title"></h5>
+            <p class="card-text"></p>
+            <a href="#" class="btn btn-primary">1</a>
+          </div>
+        </div>
+        <div class="card moving">
+          <div class="card-body">
+            <h5 class="card-title"></h5>
+            <p class="card-text"></p>
+            <a href="#" class="btn btn-primary">2</a>
+          </div>
+        </div>
+        <div class="card moving">
+          <div class="card-body">
+            <h5 class="card-title"></h5>
+            <p class="card-text"></p>
+            <a href="#" class="btn btn-primary">3</a>
+          </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card moving" id="2">// style="width:300px; height:250px">
+          <div class="card-body">
+            <h5 class="card-title">Special title treatment</h5>
+            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+            <a href="#" class="btn btn-primary">Go somewhere</a>
+          </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card moving">// style="width:300px; height:250px">
+          <div class="card-body">
+            <h5 class="card-title">Special title treatment</h5>
+            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+            <a href="#" class="btn btn-primary">Go somewhere</a>
+          </div>
+        </div>
+    </div>
+</div-->
+<table style="height: 100%; position: absolute; width: 100%">
+    <tr>
+        {% for key, value in columns.items() %}
+            <td class="col" id=-{{ key }}>{{value}}</td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <h1>{{actions}}</h1>
+        {% for action in actions %}
+            <td class="col place_to_drag" valign="top">
+                {% for key, value in action.items() %}
+                    <div class="card drag_element" id="{{key}}" align="top">
+                      <div class="card-body">
+                        <h5 class="card-title"></h5>
+                        <p class="card-text">{{value}}</p>
+                        <a href="#" class="btn btn-primary">1</a>
+                      </div>
+                    </div>
+                {% endfor %}
+            </td>
+        {% endfor %}
+        <!--td class="col place_to_drag" valign="top">
+            <div class="card drag_element" align="top">
           <div class="card-body">
             <h5 class="card-title"></h5>
             <p class="card-text"></p>
@@ -81,25 +150,26 @@
             <a href="#" class="btn btn-primary">3</a>
           </div>
         </div>
-    </div>
-    <div class="col place_to_drag">
-        <div class="card drag_element" id="2">// style="width:300px; height:250px">
+        </--td>
+        <td class="col place_to_drag" valign="top">
+            <div class="card drag_element" id="2">// style="width:300px; height:250px">
           <div class="card-body">
             <h5 class="card-title">Special title treatment</h5>
             <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
             <a href="#" class="btn btn-primary">Go somewhere</a>
           </div>
         </div>
-    </div>
-    <div class="col place_to_drag">
-        <div class="card drag_element">// style="width:300px; height:250px">
+        </td>
+        <td class="col place_to_drag" valign="top">
+            <div class="card drag_element" id="2">// style="width:300px; height:250px">
           <div class="card-body">
             <h5 class="card-title">Special title treatment</h5>
             <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
             <a href="#" class="btn btn-primary">Go somewhere</a>
           </div>
         </div>
-    </div>
-</div>
+        </td-->
+    </tr>
+</table>
 </body>
 </html>
