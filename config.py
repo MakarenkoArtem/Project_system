@@ -1,0 +1,1 @@
+LOCAL_DB = 'sqlite:///db/base_date.db?check_same_thread=False'
