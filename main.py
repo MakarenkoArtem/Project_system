@@ -2,6 +2,7 @@ from flask import Flask, render_template, request
 from flask_restful import Api
 from flask_login import LoginManager
 from api.action_resource import ActionResource
+from api.column_resource import ColumnResource
 import datetime
 import requests
 from data import db_session
@@ -20,15 +21,24 @@ app.config['SECRET_KEY'] = 'my_secret_key'
 @app.route('/<int:table_id>', methods=['GET', 'POST'])
 def test(table_id):  # форма для добавления теста
     db_sess = db_session.create_session()
-    test = db_sess.query(Project).filter(Project.id == table_id).one()
-    print(test)
-    print(vars(request))
-    print(f"{request.scheme}://{request.server[0]}:{request.server[1]}/api/v1/action/2113")
-    requests.post(f"{request.scheme}://{request.server[0]}:{request.server[1]}/api/v1/action/2113",
-                  data={'action_id': 123, 'column_id': 1})
+    project = db_sess.query(Project).filter(Project.id == table_id).one()
+    print(project)
+    table = {}
+    for column_id in project.columns_id.split():
+        print(column_id)
+        column = db_sess.query(Column).filter(Column.id == int(column_id)).one()
+        table[column] = db_sess.query(Value).filter(Value.column_id == int(column_id)).all()
+    print(table)
+
+    #columns = db_sess.query(Column).filter(Column.project_id == project.id).all()
+    #values = {i.id: db_sess.query(Value).filter(Value.column_id == i.id).all() for i in columns}
+    # print(f"{request.scheme}://{request.server[0]}:{request.server[1]}/api/v1/action/2113")
+    # requests.post(f"{request.scheme}://{request.server[0]}:{request.server[1]}/api/v1/action/2113",
+    #              data={'action_id': 123, 'column_id': 1})
     # return redirect('/')
-    return render_template('test.html', columns={1: "в ожидании", 2: 'в процессе', 3: 'завершено'},
-                           actions={1: ["создание дизайна", 1], 2: ['создание бд', 1], 3: ['создание запросов', 1]})
+    return render_template('test1.html', project=project, table=table)
+                           #columns=columns,
+                           #actions=values)
 
 
 @app.route('/test1', methods=['GET', 'POST'])
@@ -39,14 +49,14 @@ def test1():  # форма для добавления теста
 
 
 """*********************Подключение API*******************************"""
-api.add_resource(ActionResource, '/api/v1/action/<table_id>')
+api.add_resource(ActionResource, '/api/v1/action/<int:column_id>')
+api.add_resource(ColumnResource, '/api/v1/column/<int:project_id>')
 """*******************************************************************"""
-
 
 
 def main():
     db_session.global_init()
-    app.run(port=8080, host='127.0.0.11', debug=False)
+    app.run(port=8080, host='127.0.0.12', debug=False)
 
 
 if __name__ == "__main__":

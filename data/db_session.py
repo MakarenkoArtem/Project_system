@@ -2,6 +2,7 @@ import sqlalchemy as sa
 import sqlalchemy.orm as orm
 from sqlalchemy.orm import Session
 import sqlalchemy.ext.declarative as dec
+from sqlalchemy.inspection import inspect
 import os
 SqlAlchemyBase = dec.declarative_base()
 
@@ -30,6 +31,11 @@ def global_init():
     from . import __all_models
 
     SqlAlchemyBase.metadata.create_all(engine)
+    #inspection= inspect(engine)
+    #print(inspection.get_table_names())
+    #print(inspection.get_columns('columns'))
+
+
 
 def create_session() -> Session:
     global __factory

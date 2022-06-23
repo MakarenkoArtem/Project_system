@@ -11,7 +11,7 @@ class Project(SqlAlchemyBase, UserMixin, SerializerMixin):
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
     name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     author_id = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
-    columns = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    columns_id = sqlalchemy.Column(sqlalchemy.String, nullable=True)
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)

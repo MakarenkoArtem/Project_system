@@ -10,4 +10,4 @@ class Value(SqlAlchemyBase, UserMixin, SerializerMixin):
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
     name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    column = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
+    column_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('columns.id'), nullable=True)

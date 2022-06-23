@@ -3,7 +3,6 @@ for (let elem of drag_cols) {
     elem.addEventListener('dragover', function() {drag_move(event)})//для всех мест куда перемещается элемент делаем обработку перемещающегося элемента
 }
 
-
 let drag_elements = document.getElementsByClassName("drag_element");
 for (let elem of drag_elements) {
     elem.draggable = true;
@@ -14,7 +13,6 @@ for (let elem of drag_elements) {
 function drag_start(event){
     if (event.target.className.indexOf("drag_element") != -1){event.target.classList.add('selected');}
 };
-
 function drag_move(event) {
     event.preventDefault();
     const activeElement = document.querySelector('.selected');
@@ -27,15 +25,19 @@ function drag_move(event) {
 
 
 function drag_end(event){
+    let currentElement = event.target;
+	while (currentElement != null && currentElement.className.indexOf("place_to_drag") == -1) {
+	    currentElement = currentElement.parentElement;
+	};
+	console.log(currentElement);
+    change_value(event, event.target.id, -currentElement.id);
     event.target.classList.remove('selected');
-    change_value(event);
 };
-function change_value(event){
-    const data = JSON.stringify({'action_id':123, 'column_id':1});
-    const request = new XMLHttpRequest();
+function change_value(event, id, column_id){
+    const data = JSON.stringify({'id':id, 'column_id':column_id});
 
-    console.log(window.location.pathname)
-    request.open("post", "/api/v1/action"+window.location.pathname);
+    const request = new XMLHttpRequest();
+    request.open("post", "/api/v1/action/"+id+"/"+column_id);
     request.setRequestHeader("Content-Type", "application/json");
 
     request.onload = () => {
@@ -46,6 +48,29 @@ function change_value(event){
             console.log("Server response: ", request.statusText);
         }
     };
+    request.send(data);
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function add_column(project_id){
+    console.log(project_id);
+    const text = document.getElementById('add_column');
+    const data = JSON.stringify({});
+    const request = new XMLHttpRequest();
+    request.open("post", "/api/v1/column/"+project_id+'/'+text.value);
+    request.setRequestHeader("Content-Type", "application/json");
     request.send(data);
 };
 /*--------------------old version-------------------------------------
