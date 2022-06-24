@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request
+from os import listdir, remove, rmdir, mkdir, environ, path
+from flask import Flask, render_template, request, redirect
 from flask_restful import Api
 from flask_login import LoginManager
 from api.action_resource import ActionResource
@@ -18,6 +19,31 @@ api = Api(app)
 app.config['SECRET_KEY'] = 'my_secret_key'
 
 
+@app.route('/', methods=['GET', 'POST'])
+def none():  # форма для добавления таблицы
+    name = ''
+    error = ''
+    db_sess = db_session.create_session()
+    if request.method == 'POST':
+        project = db_sess.query(Project).filter(Project.name == request.form['name']).all()
+        if request.form["button"] == 'Open':
+            if not len(project):
+                name = request.form['name']
+                error = 'Нет такой таблицы'
+            else:
+                return redirect('/' + str(project[0].id))
+        else:
+            if not len(project):
+                project = Project(name=request.form['name'], author_id=-1, columns_id='')
+                db_sess.add(project)
+                db_sess.commit()
+                return redirect('/' + str(project.id))
+            else:
+                name = request.form['name']
+                error = 'Такая таблица уже есть'
+    return render_template('none.html', name=name, error=error)
+
+
 @app.route('/<int:table_id>', methods=['GET', 'POST'])
 def test(table_id):  # форма для добавления теста
     db_sess = db_session.create_session()
@@ -30,15 +56,15 @@ def test(table_id):  # форма для добавления теста
         table[column] = db_sess.query(Value).filter(Value.column_id == int(column_id)).all()
     print(table)
 
-    #columns = db_sess.query(Column).filter(Column.project_id == project.id).all()
-    #values = {i.id: db_sess.query(Value).filter(Value.column_id == i.id).all() for i in columns}
+    # columns = db_sess.query(Column).filter(Column.project_id == project.id).all()
+    # values = {i.id: db_sess.query(Value).filter(Value.column_id == i.id).all() for i in columns}
     # print(f"{request.scheme}://{request.server[0]}:{request.server[1]}/api/v1/action/2113")
     # requests.post(f"{request.scheme}://{request.server[0]}:{request.server[1]}/api/v1/action/2113",
     #              data={'action_id': 123, 'column_id': 1})
     # return redirect('/')
     return render_template('test1.html', project=project, table=table)
-                           #columns=columns,
-                           #actions=values)
+    # columns=columns,
+    # actions=values)
 
 
 @app.route('/test1', methods=['GET', 'POST'])
@@ -56,7 +82,11 @@ api.add_resource(ColumnResource, '/api/v1/column/<int:project_id>')
 
 def main():
     db_session.global_init()
-    app.run(port=8080, host='127.0.0.12', debug=False)
+    if 'HEROKU' in environ:
+        port = int(environ.get("PORT", 5000))
+        app.run(host='0.0.0.0', port=port)
+    else:
+        app.run(port=8080, host='127.0.0.1', debug=False)
 
 
 if __name__ == "__main__":

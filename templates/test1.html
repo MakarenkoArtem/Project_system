@@ -9,7 +9,7 @@
     <script async src="/static/js/script1.js?1" type="text/javascript"></script>
     <link rel="stylesheet" href="/static/css/style.css"/>
 
-    <title>Title</title>
+    <title>{{project.name}}</title>
 </head>
 <body>
 <h1>{{project.name}}</h1>
@@ -21,7 +21,7 @@
                 <a href="#" class="btn btn-danger" onclick="del_column(event, {{project.id}})" style="padding: 2px; font-size: 0.8rem">Удалить</a></h4>
             </td>
         {% endfor %}
-        <td min-width="15%" valign="top"><textarea id="add_column"></textarea></td>
+        <td min-width="15%" valign="top"><textarea id="add_column" style="height: 40px"></textarea></td>
     </tr>
     <tr valign="top">
         {% for column, values in table.items() %}
